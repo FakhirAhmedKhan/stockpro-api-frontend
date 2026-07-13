@@ -1,7 +1,39 @@
-export default function Page() {
+"use client";
+
+import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/shared/page-header";
+import { CustomerForm } from "@/features/customers/components/customer-form";
+import { useCreateCustomer } from "@/features/customers/hooks/use-customers";
+import { ROUTES } from "@/constants/routes";
+import type { CustomerFormValues } from "@/features/customers/schemas/customer.schema";
+
+export default function NewCustomerPage() {
+  const router = useRouter();
+  const { mutate, isPending } = useCreateCustomer();
+
+  function handleSubmit(values: CustomerFormValues) {
+    mutate(
+      {
+        fullName: values.fullName,
+        email: values.email || undefined,
+        phoneNumber: values.phoneNumber || undefined,
+        role: values.role || undefined,
+        activeStatus: values.activeStatus,
+      },
+      {
+        onSuccess: (customer) => {
+          router.push(ROUTES.customerDetail(customer.id));
+        },
+      },
+    );
+  }
+
   return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Create Customer</h1>
-    </main>
+    <div className="flex flex-col gap-6">
+      <PageHeader title="New customer" description="Add a new customer to your directory." />
+      <div className="max-w-lg rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <CustomerForm onSubmit={handleSubmit} isSubmitting={isPending} submitLabel="Create customer" />
+      </div>
+    </div>
   );
 }
