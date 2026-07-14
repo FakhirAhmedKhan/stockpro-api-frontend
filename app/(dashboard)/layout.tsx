@@ -20,15 +20,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   }, [isLoading, isAuthenticated, router]);
 
   if (isLoading || !isAuthenticated) {
-    return <LoadingState label="Checking your session…" className="min-h-screen" />;
+    return (
+      <LoadingState label="Checking your session…" className="min-h-screen" />
+    );
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
       <AppSidebar />
       <div className="flex flex-1 flex-col">
         <AppHeader />
-        <main className="flex-1 p-4 pb-20 md:pb-4">{children}</main>
+        <main className="flex-1 p-4 pb-24 md:p-8 md:pb-8">
+          <div className="mx-auto w-full max-w-6xl">{children}</div>
+        </main>
         <MobileNavigation />
       </div>
     </div>

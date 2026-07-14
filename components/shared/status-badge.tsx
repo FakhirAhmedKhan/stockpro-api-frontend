@@ -6,21 +6,26 @@ interface StatusBadgeProps {
   className?: string;
 }
 
-const TONE_CLASSES: Record<NonNullable<StatusBadgeProps["tone"]>, string> = {
-  success: "bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-400",
-  neutral: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  warning: "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400",
-  danger: "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400",
+const TONE_VARS: Record<
+  NonNullable<StatusBadgeProps["tone"]>,
+  { color: string; background: string }
+> = {
+  success: { color: "var(--success)", background: "var(--success-soft)" },
+  neutral: { color: "var(--text-secondary)", background: "var(--surface-2)" },
+  warning: { color: "var(--warning)", background: "var(--warning-soft)" },
+  danger: { color: "var(--danger)", background: "var(--danger-soft)" },
 };
 
-export function StatusBadge({ label, tone = "neutral", className }: StatusBadgeProps) {
+export function StatusBadge({
+  label,
+  tone = "neutral",
+  className,
+}: StatusBadgeProps) {
+  const vars = TONE_VARS[tone];
   return (
     <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
-        TONE_CLASSES[tone],
-        className,
-      )}
+      className={cn("badge", className)}
+      style={{ color: vars.color, background: vars.background }}
     >
       {label}
     </span>

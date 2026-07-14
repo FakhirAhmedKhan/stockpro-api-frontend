@@ -16,7 +16,24 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   }, [isLoading, isAuthenticated, router]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 p-4 dark:bg-zinc-950">
+    <div
+      className="flex min-h-screen flex-col items-center justify-center p-4"
+      style={{ background: "var(--bg)" }}
+    >
+      <div className="mb-8 flex items-center gap-2">
+        <span
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
+          style={{ background: "var(--accent)" }}
+        >
+          S
+        </span>
+        <span
+          className="text-lg font-semibold tracking-tight"
+          style={{ color: "var(--text-primary)" }}
+        >
+          StockPro
+        </span>
+      </div>
       <div className="w-full max-w-sm">{children}</div>
     </div>
   );

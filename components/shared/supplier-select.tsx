@@ -12,18 +12,23 @@ interface SupplierSelectProps {
   disabled?: boolean;
 }
 
-export function SupplierSelect({ value, onChange, disabled }: SupplierSelectProps) {
+export function SupplierSelect({
+  value,
+  onChange,
+  disabled,
+}: SupplierSelectProps) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.suppliers({ search: debouncedSearch, pageSize: 20 }),
-    queryFn: () => supplierApi.list({ search: debouncedSearch || undefined, pageSize: 20 }),
+    queryFn: () =>
+      supplierApi.list({ search: debouncedSearch || undefined, pageSize: 20 }),
   });
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="supplier-search" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label htmlFor="supplier-search" className="field-label">
         Supplier
       </label>
       <input
@@ -33,26 +38,46 @@ export function SupplierSelect({ value, onChange, disabled }: SupplierSelectProp
         value={search}
         disabled={disabled}
         onChange={(event) => setSearch(event.target.value)}
-        className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+        className="input-field"
       />
 
-      {isLoading && <p className="text-xs text-zinc-500">Loading suppliers…</p>}
-      {isError && <p className="text-xs text-red-600">Unable to load suppliers.</p>}
+      {isLoading && <p className="field-hint">Loading suppliers…</p>}
+      {isError && <p className="field-error">Unable to load suppliers.</p>}
 
       {data && data.items.length > 0 && (
-        <ul className="max-h-48 overflow-y-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+        <ul className="surface-card max-h-48 overflow-y-auto">
           {data.items.map((supplier) => (
             <li key={supplier.id}>
               <button
                 type="button"
                 disabled={disabled}
                 onClick={() => onChange(supplier.id, supplier.name)}
-                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900 ${
-                  value === supplier.id ? "bg-zinc-100 dark:bg-zinc-800" : ""
-                }`}
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors"
+                style={{
+                  color: "var(--text-primary)",
+                  background:
+                    value === supplier.id
+                      ? "var(--accent-soft)"
+                      : "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  if (value !== supplier.id)
+                    e.currentTarget.style.background = "var(--surface-2)";
+                }}
+                onMouseLeave={(e) => {
+                  if (value !== supplier.id)
+                    e.currentTarget.style.background = "transparent";
+                }}
               >
                 <span>{supplier.name}</span>
-                {supplier.email && <span className="text-xs text-zinc-400">{supplier.email}</span>}
+                {supplier.email && (
+                  <span
+                    className="text-xs"
+                    style={{ color: "var(--text-tertiary)" }}
+                  >
+                    {supplier.email}
+                  </span>
+                )}
               </button>
             </li>
           ))}
@@ -60,7 +85,7 @@ export function SupplierSelect({ value, onChange, disabled }: SupplierSelectProp
       )}
 
       {data && data.items.length === 0 && (
-        <p className="text-xs text-zinc-500">No suppliers match &quot;{search}&quot;.</p>
+        <p className="field-hint">No suppliers match &quot;{search}&quot;.</p>
       )}
     </div>
   );

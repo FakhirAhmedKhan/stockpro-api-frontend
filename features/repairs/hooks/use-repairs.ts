@@ -18,23 +18,35 @@ import type { ApiError } from "@/types/api.types";
  */
 export function useRepairsCache() {
   const queryClient = useQueryClient();
-  return queryClient.getQueryData<RepairBatchResponseDto[]>(queryKeys.repairs()) ?? [];
+  return (
+    queryClient.getQueryData<RepairBatchResponseDto[]>(queryKeys.repairs()) ??
+    []
+  );
 }
 
-export function useRepairCache(repairId: string): RepairBatchResponseDto | undefined {
+export function useRepairCache(
+  repairId: string,
+): RepairBatchResponseDto | undefined {
   const queryClient = useQueryClient();
-  return queryClient.getQueryData<RepairBatchResponseDto>(queryKeys.repair(repairId));
+  return queryClient.getQueryData<RepairBatchResponseDto>(
+    queryKeys.repair(repairId),
+  );
 }
 
 function upsertRepairCache(
   queryClient: ReturnType<typeof useQueryClient>,
   batch: RepairBatchResponseDto,
 ) {
-  queryClient.setQueryData<RepairBatchResponseDto[]>(queryKeys.repairs(), (existing) => {
-    const withoutCurrent = (existing ?? []).filter((item) => item.repairId !== batch.repairId);
-    return [batch, ...withoutCurrent];
-  });
-  queryClient.setQueryData(queryKeys.repair(batch.repairId), batch);
+  queryClient.setQueryData<RepairBatchResponseDto[]>(
+    queryKeys.repairs(),
+    (existing) => {
+      const withoutCurrent = (existing ?? []).filter(
+        (item) => item.id !== batch.id,
+      );
+      return [batch, ...withoutCurrent];
+    },
+  );
+  queryClient.setQueryData(queryKeys.repair(batch.id), batch);
 }
 
 export function useSendToRepair() {
@@ -65,7 +77,9 @@ export function useCompleteRepair(onBatchUpdated: (repairId: string) => void) {
           ...existing,
           status: result.status,
           items: existing.items.map((item) => {
-            const completion = result.items.find((entry) => entry.productId === item.productId);
+            const completion = result.items.find(
+              (entry) => entry.productId === item.productId,
+            );
             return completion ? { ...item, status: completion.status } : item;
           }),
         };

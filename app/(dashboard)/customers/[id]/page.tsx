@@ -17,17 +17,33 @@ import { ROUTES } from "@/constants/routes";
 import type { CustomerFormValues } from "@/features/customers/schemas/customer.schema";
 import type { ApiError } from "@/types/api.types";
 
-export default function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function CustomerDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
-  const { data: customer, isLoading, isError, error, refetch } = useCustomer(id);
+  const {
+    data: customer,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useCustomer(id);
   const updateCustomer = useUpdateCustomer(id);
   const deactivateCustomer = useDeactivateCustomer();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  if (isLoading) return <LoadingState label="Loading customer…" className="min-h-[50vh]" />;
+  if (isLoading)
+    return <LoadingState label="Loading customer…" className="min-h-[50vh]" />;
   if (isError || !customer) {
     return (
-      <ErrorState description={(error as unknown as ApiError)?.message ?? "Customer not found."} onRetry={() => refetch()} />
+      <ErrorState
+        description={
+          (error as unknown as ApiError)?.message ?? "Customer not found."
+        }
+        onRetry={() => refetch()}
+      />
     );
   }
 
@@ -54,7 +70,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
             />
             <Link
               href={ROUTES.customerLedger(customer.id)}
-              className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+              className="btn-secondary"
             >
               View ledger
             </Link>
@@ -71,7 +87,7 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         }
       />
 
-      <div className="max-w-lg rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="surface-card max-w-lg p-6">
         <CustomerForm
           defaultValues={customer}
           onSubmit={handleUpdate}
@@ -89,7 +105,9 @@ export default function CustomerDetailPage({ params }: { params: Promise<{ id: s
         isLoading={deactivateCustomer.isPending}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => {
-          deactivateCustomer.mutate(id, { onSuccess: () => setConfirmOpen(false) });
+          deactivateCustomer.mutate(id, {
+            onSuccess: () => setConfirmOpen(false),
+          });
         }}
       />
     </div>

@@ -1,34 +1,33 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { StatusBadge } from "@/components/shared/status-badge";
-import { formatDate } from "@/lib/formatters";
+import { formatCurrency, formatDate } from "@/lib/formatters";
 import { ROUTES } from "@/constants/routes";
-import type { SupplierResponseDto } from "@/types/supplier.types";
+import type { StockResponseDto } from "@/types/stock.types";
 
-interface SupplierTableProps {
-  suppliers: SupplierResponseDto[];
+interface StockTableProps {
+  stocks: StockResponseDto[];
 }
 
-export function SupplierTable({ suppliers }: SupplierTableProps) {
+export function StockTable({ stocks }: StockTableProps) {
   const router = useRouter();
 
   return (
     <div className="table-wrap">
-      <table className="w-full min-w-[640px] text-sm">
+      <table className="w-full min-w-[720px] text-sm">
         <thead>
           <tr className="table-head-row">
             <th scope="col" className="px-4 py-3 font-medium">
-              Name
+              Title
             </th>
             <th scope="col" className="px-4 py-3 font-medium">
-              Email
+              Available / Total
             </th>
             <th scope="col" className="px-4 py-3 font-medium">
-              Phone
+              Unit price
             </th>
             <th scope="col" className="px-4 py-3 font-medium">
-              Status
+              Stock price
             </th>
             <th scope="col" className="px-4 py-3 font-medium">
               Created
@@ -36,34 +35,31 @@ export function SupplierTable({ suppliers }: SupplierTableProps) {
           </tr>
         </thead>
         <tbody>
-          {suppliers.map((supplier) => (
+          {stocks.map((stock) => (
             <tr
-              key={supplier.id}
+              key={stock.id}
               tabIndex={0}
-              onClick={() => router.push(ROUTES.supplierDetail(supplier.id))}
+              onClick={() => router.push(ROUTES.stockDetail(stock.id))}
               onKeyDown={(event) => {
                 if (event.key === "Enter")
-                  router.push(ROUTES.supplierDetail(supplier.id));
+                  router.push(ROUTES.stockDetail(stock.id));
               }}
               className="table-row-interactive"
             >
               <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
-                {supplier.name}
+                {stock.title}
               </td>
               <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
-                {supplier.email ?? "—"}
+                {stock.quantityAvailable} / {stock.totalQuantity}
               </td>
               <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
-                {supplier.phoneNumber ?? "—"}
-              </td>
-              <td className="px-4 py-3">
-                <StatusBadge
-                  label={supplier.activeStatus ? "Active" : "Inactive"}
-                  tone={supplier.activeStatus ? "success" : "neutral"}
-                />
+                {formatCurrency(stock.unitPrice)}
               </td>
               <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
-                {formatDate(supplier.createdAt)}
+                {formatCurrency(stock.stockPrice)}
+              </td>
+              <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+                {formatDate(stock.createdAt)}
               </td>
             </tr>
           ))}

@@ -13,13 +13,16 @@ export default function NewRepairPage() {
 
   function handleSubmit(payload: SendToRepairPayload) {
     mutate(payload, {
-      onSuccess: (batch) => router.push(ROUTES.repairDetail(batch.repairId)),
+      onSuccess: (batch) => router.push(ROUTES.repairDetail(batch.id)),
     });
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Send to repair" description="Send eligible products from a stock batch for repair." />
+      <PageHeader
+        title="Send to repair"
+        description="Send eligible products from a stock batch for repair."
+      />
       <SendToRepairForm onSubmit={handleSubmit} isSubmitting={isPending} />
     </div>
   );

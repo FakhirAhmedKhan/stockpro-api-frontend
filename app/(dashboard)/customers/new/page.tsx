@@ -30,9 +30,16 @@ export default function NewCustomerPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="New customer" description="Add a new customer to your directory." />
-      <div className="max-w-lg rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <CustomerForm onSubmit={handleSubmit} isSubmitting={isPending} submitLabel="Create customer" />
+      <PageHeader
+        title="New customer"
+        description="Add a new customer to your directory."
+      />
+      <div className="surface-card max-w-lg p-6">
+        <CustomerForm
+          onSubmit={handleSubmit}
+          isSubmitting={isPending}
+          submitLabel="Create customer"
+        />
       </div>
     </div>
   );

@@ -9,11 +9,24 @@ interface PaymentModalProps {
   invoiceId: string;
   outstanding: number;
   isSubmitting?: boolean;
-  onSubmit: (payload: { invoiceId: string; amount: number; method?: string; reference?: string; idempotencyKey: string }) => void;
+  onSubmit: (payload: {
+    invoiceId: string;
+    amount: number;
+    method?: string;
+    reference?: string;
+    idempotencyKey: string;
+  }) => void;
   onClose: () => void;
 }
 
-export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = false, onSubmit, onClose }: PaymentModalProps) {
+export function PaymentModal({
+  open,
+  invoiceId,
+  outstanding,
+  isSubmitting = false,
+  onSubmit,
+  onClose,
+}: PaymentModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const idempotencyKey = useId();
   const [amount, setAmount] = useState("");
@@ -44,7 +57,9 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
       return;
     }
     if (numericAmount > outstanding) {
-      setError(`Amount cannot exceed the outstanding balance of ${formatCurrency(outstanding)}.`);
+      setError(
+        `Amount cannot exceed the outstanding balance of ${formatCurrency(outstanding)}.`,
+      );
       return;
     }
 
@@ -67,9 +82,16 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
       aria-labelledby="payment-modal-title"
       className="m-auto w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40 dark:border-zinc-800 dark:bg-zinc-900"
     >
-      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 p-5">
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="flex flex-col gap-4 p-5"
+      >
         <div>
-          <h2 id="payment-modal-title" className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+          <h2
+            id="payment-modal-title"
+            className="text-base font-semibold text-zinc-900 dark:text-zinc-50"
+          >
             Record payment
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
@@ -78,13 +100,20 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
         </div>
 
         {error && (
-          <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+          <p
+            role="alert"
+            className="rounded-lg px-3 py-2 text-sm"
+            style={{ background: "var(--danger-soft)", color: "var(--danger)" }}
+          >
             {error}
           </p>
         )}
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="payment-amount" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="payment-amount"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Amount
           </label>
           <MoneyInput
@@ -96,7 +125,10 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="payment-method" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="payment-method"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Method <span className="text-zinc-400">(optional)</span>
           </label>
           <input
@@ -106,12 +138,15 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
             value={method}
             disabled={isSubmitting}
             onChange={(event) => setMethod(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="payment-reference" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="payment-reference"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Reference <span className="text-zinc-400">(optional)</span>
           </label>
           <input
@@ -121,7 +156,7 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
             value={reference}
             disabled={isSubmitting}
             onChange={(event) => setReference(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
@@ -130,7 +165,7 @@ export function PaymentModal({ open, invoiceId, outstanding, isSubmitting = fals
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            className="btn-ghost btn-sm"
           >
             Cancel
           </button>

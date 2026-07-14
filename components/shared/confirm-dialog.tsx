@@ -47,24 +47,35 @@ export function ConfirmDialog({
       }}
       aria-labelledby="confirm-dialog-title"
       aria-describedby={description ? "confirm-dialog-description" : undefined}
-      className="m-auto w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-0 shadow-lg backdrop:bg-black/40 dark:border-zinc-800 dark:bg-zinc-900"
+      className="surface-card m-auto w-full max-w-sm p-0 shadow-[var(--shadow-md)] backdrop:bg-black/50"
     >
       <div className="p-5">
-        <h2 id="confirm-dialog-title" className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+        <h2
+          id="confirm-dialog-title"
+          className="text-base font-semibold"
+          style={{ color: "var(--text-primary)" }}
+        >
           {title}
         </h2>
         {description && (
-          <p id="confirm-dialog-description" className="mt-2 text-sm text-zinc-500">
+          <p
+            id="confirm-dialog-description"
+            className="mt-2 text-sm"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {description}
           </p>
         )}
       </div>
-      <div className="flex justify-end gap-2 border-t border-zinc-200 p-4 dark:border-zinc-800">
+      <div
+        className="flex justify-end gap-2 p-4"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
         <button
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          className="btn-ghost btn-sm"
         >
           {cancelLabel}
         </button>
@@ -72,10 +83,7 @@ export function ConfirmDialog({
           type="button"
           onClick={onConfirm}
           disabled={isLoading}
-          className={cn(
-            "rounded-md px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50",
-            destructive ? "bg-red-600 hover:bg-red-700" : "bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900",
-          )}
+          className={cn(destructive ? "btn-danger" : "btn-primary", "btn-sm")}
         >
           {isLoading ? "Please wait…" : confirmLabel}
         </button>

@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { CustomerSelect } from "@/components/shared/customer-select";
-import { ProductIdList } from "@/components/shared/product-id-list";
+import { ProductMultiSelect } from "@/components/shared/product-multi-select";
 import { useCreateOrder } from "@/features/orders/hooks/use-orders";
 import { createOrderSchema } from "@/features/orders/schemas/order.schema";
 import { formatCurrency } from "@/lib/formatters";
@@ -66,11 +66,22 @@ export default function NewOrderPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="New order" description="Point of sale — create a customer order." />
+      <PageHeader
+        title="New order"
+        description="Point of sale — create a customer order."
+      />
 
-      <form onSubmit={handleSubmit} noValidate className="flex max-w-xl flex-col gap-5">
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="flex max-w-xl flex-col gap-5"
+      >
         {formError && (
-          <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+          <p
+            role="alert"
+            className="rounded-lg px-3 py-2 text-sm"
+            style={{ background: "var(--danger-soft)", color: "var(--danger)" }}
+          >
             {formError}
           </p>
         )}
@@ -84,31 +95,24 @@ export default function NewOrderPage() {
           }}
         />
         {customerLabel && (
-          <p className="-mt-3 text-xs text-zinc-500">Selected: {customerLabel}</p>
+          <p className="-mt-3 text-xs text-zinc-500">
+            Selected: {customerLabel}
+          </p>
         )}
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="stockId" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Stock ID
-          </label>
-          <p className="text-xs text-zinc-500">
-            There is currently no stock lookup endpoint — enter the stock ID from its creation
-            receipt.
-          </p>
-          <input
-            id="stockId"
-            type="text"
-            value={stockId}
-            disabled={isPending}
-            onChange={(event) => setStockId(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
-          />
-        </div>
-
-        <ProductIdList value={productIds} onChange={setProductIds} disabled={isPending} />
+        <ProductMultiSelect
+          selectedIds={productIds}
+          onSelectedIdsChange={setProductIds}
+          lockedStockId={stockId || undefined}
+          onStockLock={setStockId}
+          disabled={isPending}
+        />
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="unitPrice" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="unitPrice"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Unit sale price
           </label>
           <input
@@ -119,12 +123,15 @@ export default function NewOrderPage() {
             value={unitPrice}
             disabled={isPending}
             onChange={(event) => setUnitPrice(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="paidAmount" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="paidAmount"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Initial payment
           </label>
           <input
@@ -135,18 +142,28 @@ export default function NewOrderPage() {
             value={paidAmount}
             disabled={isPending}
             onChange={(event) => setPaidAmount(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="surface-card p-4 text-sm">
           <div className="flex justify-between">
-            <span className="text-zinc-500">Quantity</span>
-            <span className="font-medium text-zinc-900 dark:text-zinc-100">{quantity}</span>
+            <span style={{ color: "var(--text-secondary)" }}>Quantity</span>
+            <span
+              className="font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
+              {quantity}
+            </span>
           </div>
           <div className="mt-1 flex justify-between">
-            <span className="text-zinc-500">Preview total (backend is authoritative)</span>
-            <span className="font-medium text-zinc-900 dark:text-zinc-100">
+            <span style={{ color: "var(--text-secondary)" }}>
+              Preview total (backend is authoritative)
+            </span>
+            <span
+              className="font-medium"
+              style={{ color: "var(--text-primary)" }}
+            >
               {formatCurrency(totalPrice)}
             </span>
           </div>
@@ -155,7 +172,7 @@ export default function NewOrderPage() {
         <button
           type="submit"
           disabled={isPending}
-          className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+          className="btn-primary self-start"
         >
           {isPending ? "Placing order…" : "Place order"}
         </button>

@@ -3,7 +3,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { dashboardApi } from "@/services/dashboard.api";
 import { queryKeys } from "@/constants/query-keys";
-import type { DashboardDateRange, SalesChartType } from "@/types/dashboard.types";
+import type {
+  DashboardDateRange,
+  SalesChartType,
+} from "@/types/dashboard.types";
 
 export function useDashboardMetrics(range: DashboardDateRange) {
   return useQuery({
@@ -12,7 +15,10 @@ export function useDashboardMetrics(range: DashboardDateRange) {
   });
 }
 
-export function useSalesChart(range: DashboardDateRange, type: SalesChartType = "all") {
+export function useSalesChart(
+  range: DashboardDateRange,
+  type: SalesChartType = "all",
+) {
   return useQuery({
     queryKey: queryKeys.dashboardSalesChart(range, type),
     queryFn: () => dashboardApi.salesChart({ ...range, type }),

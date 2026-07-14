@@ -12,18 +12,23 @@ interface CustomerSelectProps {
   disabled?: boolean;
 }
 
-export function CustomerSelect({ value, onChange, disabled }: CustomerSelectProps) {
+export function CustomerSelect({
+  value,
+  onChange,
+  disabled,
+}: CustomerSelectProps) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: queryKeys.customers({ search: debouncedSearch, pageSize: 20 }),
-    queryFn: () => customerApi.list({ search: debouncedSearch || undefined, pageSize: 20 }),
+    queryFn: () =>
+      customerApi.list({ search: debouncedSearch || undefined, pageSize: 20 }),
   });
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor="customer-search" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label htmlFor="customer-search" className="field-label">
         Customer
       </label>
       <input
@@ -33,26 +38,46 @@ export function CustomerSelect({ value, onChange, disabled }: CustomerSelectProp
         value={search}
         disabled={disabled}
         onChange={(event) => setSearch(event.target.value)}
-        className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+        className="input-field"
       />
 
-      {isLoading && <p className="text-xs text-zinc-500">Loading customers…</p>}
-      {isError && <p className="text-xs text-red-600">Unable to load customers.</p>}
+      {isLoading && <p className="field-hint">Loading customers…</p>}
+      {isError && <p className="field-error">Unable to load customers.</p>}
 
       {data && data.items.length > 0 && (
-        <ul className="max-h-48 overflow-y-auto rounded-md border border-zinc-200 dark:border-zinc-800">
+        <ul className="surface-card max-h-48 overflow-y-auto">
           {data.items.map((customer) => (
             <li key={customer.id}>
               <button
                 type="button"
                 disabled={disabled}
                 onClick={() => onChange(customer.id, customer.fullName)}
-                className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900 ${
-                  value === customer.id ? "bg-zinc-100 dark:bg-zinc-800" : ""
-                }`}
+                className="flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors"
+                style={{
+                  color: "var(--text-primary)",
+                  background:
+                    value === customer.id
+                      ? "var(--accent-soft)"
+                      : "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  if (value !== customer.id)
+                    e.currentTarget.style.background = "var(--surface-2)";
+                }}
+                onMouseLeave={(e) => {
+                  if (value !== customer.id)
+                    e.currentTarget.style.background = "transparent";
+                }}
               >
                 <span>{customer.fullName}</span>
-                {customer.email && <span className="text-xs text-zinc-400">{customer.email}</span>}
+                {customer.email && (
+                  <span
+                    className="text-xs"
+                    style={{ color: "var(--text-tertiary)" }}
+                  >
+                    {customer.email}
+                  </span>
+                )}
               </button>
             </li>
           ))}
@@ -60,7 +85,7 @@ export function CustomerSelect({ value, onChange, disabled }: CustomerSelectProp
       )}
 
       {data && data.items.length === 0 && (
-        <p className="text-xs text-zinc-500">No customers match &quot;{search}&quot;.</p>
+        <p className="field-hint">No customers match &quot;{search}&quot;.</p>
       )}
     </div>
   );

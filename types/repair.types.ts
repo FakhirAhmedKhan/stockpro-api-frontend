@@ -7,12 +7,13 @@ export interface RepairBatchItemDto {
 }
 
 export interface RepairBatchResponseDto {
-  repairId: string;
+  id: string;
   stockId: string;
   technician: string | null;
   narration: string | null;
-  status: "Pending" | "Repaired";
-  sentAt: string;
+  status: string;
+  completedAt: string | null;
+  createdAt: string;
   items: RepairBatchItemDto[];
 }
 

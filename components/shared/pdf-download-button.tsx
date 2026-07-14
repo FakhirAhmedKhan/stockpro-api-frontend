@@ -13,13 +13,22 @@ interface PdfDownloadButtonProps {
   label?: string;
 }
 
-function extractFilename(contentDisposition: string | undefined, fallback: string): string {
+function extractFilename(
+  contentDisposition: string | undefined,
+  fallback: string,
+): string {
   if (!contentDisposition) return fallback;
-  const match = /filename\*?=(?:UTF-8'')?["']?([^"';]+)["']?/i.exec(contentDisposition);
+  const match = /filename\*?=(?:UTF-8'')?["']?([^"';]+)["']?/i.exec(
+    contentDisposition,
+  );
   return match?.[1] ? decodeURIComponent(match[1]) : fallback;
 }
 
-export function PdfDownloadButton({ path, fallbackFilename, label = "Download PDF" }: PdfDownloadButtonProps) {
+export function PdfDownloadButton({
+  path,
+  fallbackFilename,
+  label = "Download PDF",
+}: PdfDownloadButtonProps) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   async function handleDownload() {
@@ -28,7 +37,10 @@ export function PdfDownloadButton({ path, fallbackFilename, label = "Download PD
     let objectUrl: string | null = null;
     try {
       const response = await apiClient.get(path, { responseType: "blob" });
-      const filename = extractFilename(response.headers["content-disposition"], fallbackFilename);
+      const filename = extractFilename(
+        response.headers["content-disposition"],
+        fallbackFilename,
+      );
       objectUrl = URL.createObjectURL(response.data as Blob);
       const link = document.createElement("a");
       link.href = objectUrl;
@@ -58,7 +70,7 @@ export function PdfDownloadButton({ path, fallbackFilename, label = "Download PD
       type="button"
       onClick={handleDownload}
       disabled={isDownloading}
-      className="flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+      className="btn-secondary"
     >
       {isDownloading ? (
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

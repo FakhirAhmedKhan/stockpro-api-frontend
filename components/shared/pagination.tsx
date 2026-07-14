@@ -16,7 +16,8 @@ export function Pagination({ pagination, onPageChange }: PaginationProps) {
   return (
     <nav
       aria-label="Pagination"
-      className="flex items-center justify-between gap-4 border-t border-zinc-200 pt-3 text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+      className="flex items-center justify-between gap-4 pt-1 text-sm"
+      style={{ color: "var(--text-secondary)" }}
     >
       <span>
         Page {page} of {Math.max(totalPages, 1)} &middot; {totalItems} total
@@ -27,9 +28,9 @@ export function Pagination({ pagination, onPageChange }: PaginationProps) {
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
           aria-label="Previous page"
-          className="flex items-center gap-1 rounded-md border border-zinc-300 px-2.5 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+          className="btn-secondary btn-sm"
         >
-          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
           Prev
         </button>
         <button
@@ -37,10 +38,10 @@ export function Pagination({ pagination, onPageChange }: PaginationProps) {
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
           aria-label="Next page"
-          className="flex items-center gap-1 rounded-md border border-zinc-300 px-2.5 py-1.5 disabled:opacity-40 dark:border-zinc-700"
+          className="btn-secondary btn-sm"
         >
           Next
-          <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </div>
     </nav>

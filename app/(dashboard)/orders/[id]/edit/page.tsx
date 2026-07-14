@@ -4,17 +4,26 @@ import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/feedback/empty-state";
-import { ProductIdList } from "@/components/shared/product-id-list";
-import { useOrderCache, useUpdateOrder } from "@/features/orders/hooks/use-orders";
+import { ProductMultiSelect } from "@/components/shared/product-multi-select";
+import {
+  useOrderCache,
+  useUpdateOrder,
+} from "@/features/orders/hooks/use-orders";
 import { ROUTES } from "@/constants/routes";
 
-export default function EditOrderPage({ params }: { params: Promise<{ id: string }> }) {
+export default function EditOrderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const order = useOrderCache(id);
   const router = useRouter();
   const { mutate, isPending } = useUpdateOrder(id);
 
-  const [productIds, setProductIds] = useState<string[]>(order?.productIds ?? []);
+  const [productIds, setProductIds] = useState<string[]>(
+    order?.productIds ?? [],
+  );
   const [unitPrice, setUnitPrice] = useState(
     order ? String(Number(order.totalPrice) / Math.max(order.quantity, 1)) : "",
   );
@@ -57,11 +66,23 @@ export default function EditOrderPage({ params }: { params: Promise<{ id: string
         description="Changing products restores/consumes inventory and recalculates the invoice server-side."
       />
 
-      <form onSubmit={handleSubmit} noValidate className="flex max-w-xl flex-col gap-5">
-        <ProductIdList value={productIds} onChange={setProductIds} disabled={isPending} />
+      <form
+        onSubmit={handleSubmit}
+        noValidate
+        className="flex max-w-xl flex-col gap-5"
+      >
+        <ProductMultiSelect
+          selectedIds={productIds}
+          onSelectedIdsChange={setProductIds}
+          lockedStockId={order.stockId}
+          disabled={isPending}
+        />
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="unitPrice" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="unitPrice"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Unit sale price
           </label>
           <input
@@ -72,12 +93,15 @@ export default function EditOrderPage({ params }: { params: Promise<{ id: string
             value={unitPrice}
             disabled={isPending}
             onChange={(event) => setUnitPrice(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="paidAmount" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="paidAmount"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Paid amount
           </label>
           <input
@@ -88,12 +112,15 @@ export default function EditOrderPage({ params }: { params: Promise<{ id: string
             value={paidAmount}
             disabled={isPending}
             onChange={(event) => setPaidAmount(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="narration" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label
+            htmlFor="narration"
+            className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          >
             Narration <span className="text-zinc-400">(optional)</span>
           </label>
           <textarea
@@ -102,14 +129,14 @@ export default function EditOrderPage({ params }: { params: Promise<{ id: string
             value={narration}
             disabled={isPending}
             onChange={(event) => setNarration(event.target.value)}
-            className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+            className="input-field"
           />
         </div>
 
         <button
           type="submit"
           disabled={isPending}
-          className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+          className="btn-primary self-start"
         >
           {isPending ? "Saving…" : "Save changes"}
         </button>

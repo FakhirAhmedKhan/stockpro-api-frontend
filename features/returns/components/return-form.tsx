@@ -2,15 +2,31 @@
 
 import { useState } from "react";
 import { AlertTriangle } from "lucide-react";
-import { ProductIdList } from "@/components/shared/product-id-list";
+import { ProductMultiSelect } from "@/components/shared/product-multi-select";
 import { createReturnSchema } from "@/features/returns/schemas/return.schema";
 import type { CreateReturnPayload, ReturnType } from "@/types/return.types";
 
 const RETURN_TYPES: { value: ReturnType; label: string; helpText: string }[] = [
-  { value: "ToStock", label: "To stock", helpText: "Accepted products return to available stock." },
-  { value: "ToRepair", label: "To repair", helpText: "Products enter the repair workflow." },
-  { value: "ToVendor", label: "To vendor", helpText: "Products are sent back to the supplier." },
-  { value: "ToScrap", label: "To scrap", helpText: "Products are permanently discarded." },
+  {
+    value: "ToStock",
+    label: "To stock",
+    helpText: "Accepted products return to available stock.",
+  },
+  {
+    value: "ToRepair",
+    label: "To repair",
+    helpText: "Products enter the repair workflow.",
+  },
+  {
+    value: "ToVendor",
+    label: "To vendor",
+    helpText: "Products are sent back to the supplier.",
+  },
+  {
+    value: "ToScrap",
+    label: "To scrap",
+    helpText: "Products are permanently discarded.",
+  },
 ];
 
 interface ReturnFormProps {
@@ -18,7 +34,10 @@ interface ReturnFormProps {
   isSubmitting?: boolean;
 }
 
-export function ReturnForm({ onSubmit, isSubmitting = false }: ReturnFormProps) {
+export function ReturnForm({
+  onSubmit,
+  isSubmitting = false,
+}: ReturnFormProps) {
   const [stockId, setStockId] = useState("");
   const [returnType, setReturnType] = useState<ReturnType>("ToStock");
   const [productIds, setProductIds] = useState<string[]>([]);
@@ -30,7 +49,12 @@ export function ReturnForm({ onSubmit, isSubmitting = false }: ReturnFormProps) 
     if (isSubmitting) return;
     setFormError(null);
 
-    const parsed = createReturnSchema.safeParse({ stockId, returnType, productIds, narration });
+    const parsed = createReturnSchema.safeParse({
+      stockId,
+      returnType,
+      productIds,
+      narration,
+    });
     if (!parsed.success) {
       setFormError(parsed.error.issues[0]?.message ?? "Please check the form.");
       return;
@@ -45,29 +69,25 @@ export function ReturnForm({ onSubmit, isSubmitting = false }: ReturnFormProps) 
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex max-w-xl flex-col gap-5">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex max-w-xl flex-col gap-5"
+    >
       {formError && (
-        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <p
+          role="alert"
+          className="rounded-lg px-3 py-2 text-sm"
+          style={{ background: "var(--danger-soft)", color: "var(--danger)" }}
+        >
           {formError}
         </p>
       )}
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="stockId" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Stock ID
-        </label>
-        <input
-          id="stockId"
-          type="text"
-          value={stockId}
-          disabled={isSubmitting}
-          onChange={(event) => setStockId(event.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
-        />
-      </div>
-
       <fieldset className="flex flex-col gap-2">
-        <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Return type</legend>
+        <legend className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Return type
+        </legend>
         <div className="grid grid-cols-2 gap-2">
           {RETURN_TYPES.map((type) => (
             <label
@@ -97,16 +117,30 @@ export function ReturnForm({ onSubmit, isSubmitting = false }: ReturnFormProps) 
       </fieldset>
 
       {returnType === "ToScrap" && (
-        <p role="alert" className="flex items-center gap-2 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+        <p
+          role="alert"
+          className="flex items-center gap-2 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:bg-amber-950/40 dark:text-amber-300"
+        >
           <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden="true" />
-          Scrapping is permanent — these products are removed from inventory and cannot be recovered.
+          Scrapping is permanent — these products are removed from inventory and
+          cannot be recovered.
         </p>
       )}
 
-      <ProductIdList value={productIds} onChange={setProductIds} disabled={isSubmitting} />
+      <ProductMultiSelect
+        selectedIds={productIds}
+        onSelectedIdsChange={setProductIds}
+        lockedStockId={stockId || undefined}
+        onStockLock={setStockId}
+        statuses={["Sold"]}
+        disabled={isSubmitting}
+      />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="narration" className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <label
+          htmlFor="narration"
+          className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
           Narration <span className="text-zinc-400">(optional)</span>
         </label>
         <textarea
@@ -115,14 +149,14 @@ export function ReturnForm({ onSubmit, isSubmitting = false }: ReturnFormProps) 
           value={narration}
           disabled={isSubmitting}
           onChange={(event) => setNarration(event.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-950"
+          className="input-field"
         />
       </div>
 
       <button
         type="submit"
         disabled={isSubmitting}
-        className="self-start rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+        className="btn-primary self-start"
       >
         {isSubmitting ? "Processing…" : "Process return"}
       </button>

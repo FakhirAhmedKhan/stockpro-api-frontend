@@ -1,14 +1,27 @@
 import { apiClient } from "@/lib/api-client";
-import type { CreateProductPayload, ProductResponseDto } from "@/types/product.types";
+import type { PaginatedResponse } from "@/types/api.types";
+import type {
+  CreateProductPayload,
+  ProductListFilters,
+  ProductResponseDto,
+} from "@/types/product.types";
 
-/**
- * The backend currently exposes only `POST /api/Product` (add one product to
- * an existing Stock) — there is no `GET /api/Product` list endpoint
- * (frontend_specification.md §3.1). Product pickers cannot be populated from
- * the server today; barcodes must be entered/scanned and are resolved by the
- * consuming endpoint (e.g. Order creation) at submission time.
- */
 export const productApi = {
+  list: (filters: ProductListFilters = {}) =>
+    apiClient
+      .get<PaginatedResponse<ProductResponseDto>>("/Product", {
+        params: {
+          ...filters,
+          // Sent as a comma-separated string rather than relying on axios's
+          // bracket-array query serialization, which Express 5's default
+          // "simple" query parser does not merge back into an array.
+          statuses: filters.statuses?.join(","),
+        },
+      })
+      .then((res) => res.data),
+
   create: (payload: CreateProductPayload) =>
-    apiClient.post<ProductResponseDto>("/Product", payload).then((res) => res.data),
+    apiClient
+      .post<ProductResponseDto>("/Product", payload)
+      .then((res) => res.data),
 };

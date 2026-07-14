@@ -11,21 +11,32 @@ import type { ApiError } from "@/types/api.types";
 
 const PAGE_SIZE = 20;
 
-export default function SupplierLedgerPage({ params }: { params: Promise<{ id: string }> }) {
+export default function SupplierLedgerPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = use(params);
   const [page, setPage] = useState(1);
   const [range, setRange] = useState({ startDate: "", endDate: "" });
 
-  const { data, isLoading, isError, error, refetch } = usePartyLedger(id, "Supplier", {
-    page,
-    pageSize: PAGE_SIZE,
-    startDate: range.startDate || undefined,
-    endDate: range.endDate || undefined,
-  });
+  const { data, isLoading, isError, error, refetch } = usePartyLedger(
+    id,
+    "Supplier",
+    {
+      page,
+      pageSize: PAGE_SIZE,
+      startDate: range.startDate || undefined,
+      endDate: range.endDate || undefined,
+    },
+  );
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Supplier ledger" description="Statement of invoices and payments." />
+      <PageHeader
+        title="Supplier ledger"
+        description="Statement of invoices and payments."
+      />
 
       <DateRangeFilter
         startDate={range.startDate}
@@ -39,7 +50,10 @@ export default function SupplierLedgerPage({ params }: { params: Promise<{ id: s
       {isLoading ? (
         <LoadingState label="Loading ledger…" />
       ) : isError || !data ? (
-        <ErrorState description={(error as unknown as ApiError)?.message} onRetry={() => refetch()} />
+        <ErrorState
+          description={(error as unknown as ApiError)?.message}
+          onRetry={() => refetch()}
+        />
       ) : (
         <LedgerStatement report={data} onPageChange={setPage} />
       )}

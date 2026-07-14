@@ -34,10 +34,7 @@ export default function SuppliersPage() {
         title="Suppliers"
         description="Manage your supplier directory."
         actions={
-          <Link
-            href={ROUTES.supplierNew}
-            className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
-          >
+          <Link href={ROUTES.supplierNew} className="btn-primary">
             <Plus className="h-4 w-4" aria-hidden="true" />
             New supplier
           </Link>
@@ -58,7 +55,10 @@ export default function SuppliersPage() {
       {isLoading ? (
         <LoadingState label="Loading suppliers…" />
       ) : isError ? (
-        <ErrorState description={(error as unknown as ApiError).message} onRetry={() => refetch()} />
+        <ErrorState
+          description={(error as unknown as ApiError).message}
+          onRetry={() => refetch()}
+        />
       ) : !data || data.items.length === 0 ? (
         <EmptyState
           title="No suppliers found"

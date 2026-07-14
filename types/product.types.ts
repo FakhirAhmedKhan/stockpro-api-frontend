@@ -1,4 +1,5 @@
-export type ProductStatus = "Available" | "Sold" | "SentToRepair" | "Repaired" | "Vendor" | "Scrap";
+export type ProductStatus =
+  "Available" | "Sold" | "SentToRepair" | "Repaired" | "Vendor" | "Scrap";
 
 export interface ProductResponseDto {
   id: string;
@@ -20,4 +21,12 @@ export interface CreateProductPayload {
   storage?: string;
   color?: string;
   condition?: string;
+}
+
+export interface ProductListFilters {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  stockId?: string;
+  statuses?: ProductStatus[];
 }

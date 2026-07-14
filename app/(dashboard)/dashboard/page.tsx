@@ -7,19 +7,28 @@ import { LoadingState } from "@/components/feedback/loading-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { MetricCards } from "@/features/dashboard/components/metric-cards";
 import { SalesChart } from "@/features/dashboard/components/sales-chart";
-import { useDashboardMetrics, useSalesChart } from "@/features/dashboard/hooks/use-dashboard";
+import {
+  useDashboardMetrics,
+  useSalesChart,
+} from "@/features/dashboard/hooks/use-dashboard";
 import type { ApiError } from "@/types/api.types";
 
 export default function DashboardPage() {
   const [range, setRange] = useState({ startDate: "", endDate: "" });
-  const dateRange = { startDate: range.startDate || undefined, endDate: range.endDate || undefined };
+  const dateRange = {
+    startDate: range.startDate || undefined,
+    endDate: range.endDate || undefined,
+  };
 
   const metricsQuery = useDashboardMetrics(dateRange);
   const chartQuery = useSalesChart(dateRange, "all");
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Dashboard" description="Business performance overview." />
+      <PageHeader
+        title="Dashboard"
+        description="Business performance overview."
+      />
 
       <DateRangeFilter
         startDate={range.startDate}
@@ -38,8 +47,10 @@ export default function DashboardPage() {
         <MetricCards metrics={metricsQuery.data} />
       )}
 
-      <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-        <h2 className="mb-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">Sales trend</h2>
+      <div className="surface-card p-4">
+        <h2 className="mb-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Sales trend
+        </h2>
         {chartQuery.isLoading ? (
           <LoadingState label="Loading chart…" />
         ) : chartQuery.isError || !chartQuery.data ? (
