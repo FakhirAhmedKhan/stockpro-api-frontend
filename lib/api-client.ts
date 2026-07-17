@@ -3,7 +3,7 @@ import { clearToken, getToken } from "@/lib/auth-storage";
 import { ROUTES } from "@/constants/routes";
 import type { ApiError } from "@/types/api.types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/+$/, "");
 
 export const apiClient = axios.create({
   baseURL: `${API_BASE_URL}/api`,
