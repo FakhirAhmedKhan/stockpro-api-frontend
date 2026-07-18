@@ -47,7 +47,7 @@ export function ConfirmDialog({
       }}
       aria-labelledby="confirm-dialog-title"
       aria-describedby={description ? "confirm-dialog-description" : undefined}
-      className="surface-card m-auto w-full max-w-sm p-0 shadow-[var(--shadow-md)] backdrop:bg-black/50"
+      className="surface-card m-auto w-full max-w-sm p-0 shadow-[var(--shadow-md)]"
     >
       <div className="p-5">
         <h2

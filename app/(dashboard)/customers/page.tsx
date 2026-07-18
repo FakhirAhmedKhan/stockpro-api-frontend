@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchInput } from "@/components/shared/search-input";
 import { Pagination } from "@/components/shared/pagination";
-import { LoadingState } from "@/components/feedback/loading-state";
+import { TableSkeleton } from "@/components/feedback/skeleton";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { CustomerTable } from "@/features/customers/components/customer-table";
@@ -53,7 +53,7 @@ export default function CustomersPage() {
       />
 
       {isLoading ? (
-        <LoadingState label="Loading customers…" />
+        <TableSkeleton columns={5} />
       ) : isError ? (
         <ErrorState
           description={(error as unknown as ApiError).message}

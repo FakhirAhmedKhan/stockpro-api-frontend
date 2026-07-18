@@ -7,7 +7,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { DateRangeFilter } from "@/components/shared/date-range-filter";
 import { Pagination } from "@/components/shared/pagination";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { LoadingState } from "@/components/feedback/loading-state";
+import { TableSkeleton } from "@/components/feedback/skeleton";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { useReturnHistory } from "@/features/returns/hooks/use-returns";
@@ -88,7 +88,7 @@ export default function ReturnsPage() {
       </div>
 
       {isLoading ? (
-        <LoadingState label="Loading returns…" />
+        <TableSkeleton columns={4} />
       ) : isError ? (
         <ErrorState
           description={(error as unknown as ApiError).message}

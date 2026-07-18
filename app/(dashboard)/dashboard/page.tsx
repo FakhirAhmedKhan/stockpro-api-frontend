@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { BarChart3 } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { DateRangeFilter } from "@/components/shared/date-range-filter";
-import { LoadingState } from "@/components/feedback/loading-state";
+import { CardGridSkeleton, Skeleton } from "@/components/feedback/skeleton";
 import { ErrorState } from "@/components/feedback/error-state";
 import { MetricCards } from "@/features/dashboard/components/metric-cards";
 import { SalesChart } from "@/features/dashboard/components/sales-chart";
@@ -11,9 +12,18 @@ import {
   useDashboardMetrics,
   useSalesChart,
 } from "@/features/dashboard/hooks/use-dashboard";
+import { useAuth } from "@/hooks/use-auth";
 import type { ApiError } from "@/types/api.types";
 
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [range, setRange] = useState({ startDate: "", endDate: "" });
   const dateRange = {
     startDate: range.startDate || undefined,
@@ -26,8 +36,8 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Dashboard"
-        description="Business performance overview."
+        title={`${getGreeting()}${user?.userName ? `, ${user.userName}` : ""}`}
+        description="Here's how your business is performing."
       />
 
       <DateRangeFilter
@@ -37,7 +47,7 @@ export default function DashboardPage() {
       />
 
       {metricsQuery.isLoading ? (
-        <LoadingState label="Loading metrics…" />
+        <CardGridSkeleton count={8} />
       ) : metricsQuery.isError || !metricsQuery.data ? (
         <ErrorState
           description={(metricsQuery.error as unknown as ApiError)?.message}
@@ -48,11 +58,14 @@ export default function DashboardPage() {
       )}
 
       <div className="surface-card p-4">
-        <h2 className="mb-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Sales trend
-        </h2>
+        <div className="mb-4 flex items-center gap-2">
+          <BarChart3 className="h-4 w-4" style={{ color: "var(--accent)" }} aria-hidden="true" />
+          <h2 className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+            Sales trend
+          </h2>
+        </div>
         {chartQuery.isLoading ? (
-          <LoadingState label="Loading chart…" />
+          <Skeleton className="h-48 w-full" />
         ) : chartQuery.isError || !chartQuery.data ? (
           <ErrorState
             description={(chartQuery.error as unknown as ApiError)?.message}

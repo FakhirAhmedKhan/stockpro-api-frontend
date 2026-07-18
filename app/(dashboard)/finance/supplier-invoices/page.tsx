@@ -5,7 +5,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
 import { SupplierSelect } from "@/components/shared/supplier-select";
 import { Pagination } from "@/components/shared/pagination";
-import { LoadingState } from "@/components/feedback/loading-state";
+import { TableSkeleton } from "@/components/feedback/skeleton";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { ErrorState } from "@/components/feedback/error-state";
 import { useSupplierInvoiceLedger } from "@/features/finance/hooks/use-finance";
@@ -57,7 +57,7 @@ export default function SupplierInvoicesPage() {
           description="Choose a supplier above to view their invoices."
         />
       ) : isLoading ? (
-        <LoadingState label="Loading invoices…" />
+        <TableSkeleton columns={4} />
       ) : isError || !data ? (
         <ErrorState
           description={(error as unknown as ApiError)?.message}

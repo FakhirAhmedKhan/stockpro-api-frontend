@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       className="flex min-h-screen flex-col items-center justify-center p-4"
       style={{ background: "var(--bg)" }}
     >
-      <div className="mb-8 flex items-center gap-2">
+      <div className="animate-scale-in mb-8 flex items-center gap-2">
         <span
           className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
           style={{ background: "var(--accent)" }}
@@ -34,7 +34,9 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           StockPro
         </span>
       </div>
-      <div className="w-full max-w-sm">{children}</div>
+      <div className="animate-scale-in w-full max-w-sm" style={{ animationDelay: "0.05s" }}>
+        {children}
+      </div>
     </div>
   );
 }
